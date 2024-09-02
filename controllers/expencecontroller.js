@@ -1,11 +1,14 @@
 const expensedata = require("../models/expensemodel");
-
+const client = require("../postgresdb")
 const getExpense = async (req, res) => {
   try {
-    const expense = await expensedata.find({});
-    res.status(200).json(expense);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log('Received request to /users');
+    const result = await client.query('SELECT * FROM expense');
+    console.log('Query result:', result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error executing query', err);
+    res.status(500).send('Internal Server Error');
   }
 };
 
