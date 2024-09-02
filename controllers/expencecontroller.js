@@ -1,9 +1,9 @@
 const expensedata = require("../models/expensemodel");
 const client = require("../postgresdb")
+const queries =require("../queries")
 const getExpense = async (req, res) => {
   try {
-    console.log('Received request to /users');
-    const result = await client.query('SELECT * FROM expense');
+    const result = await client.query(queries.Getall("expense"));
     console.log('Query result:', result.rows);
     res.json(result.rows);
   } catch (err) {
@@ -13,14 +13,22 @@ const getExpense = async (req, res) => {
 };
 
 const getExpensebyid = async (req, res) => {
-  try {
-    const { id } = req.params;
+  // try {
+    // const { id } = req.params;
+    // const expense = await expensedata.findById(id);
+    // res.status(200).json(expense);
+  // } catch (e) {
+  //   console.error("Error creating expense:", e);
+  //   res.status(500).json({ message: e.message });
+  // }
 
-    const expense = await expensedata.findById(id);
-    res.status(200).json(expense);
-  } catch (e) {
-    console.error("Error creating expense:", e);
-    res.status(500).json({ message: e.message });
+  try{
+    const { id } = req.params;
+    const expense = await client.query(queries.GetId("expense"),[id])
+      res.status(200).json(expense.rows);
+  } catch{
+    res.status(500).send('Internal Server Error');
+
   }
 };
 
