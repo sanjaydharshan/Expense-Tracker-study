@@ -1,9 +1,10 @@
+require("dotenv").config({path:`${process.cwd()}/.env`})
 const express = require("express");
 const app = express();
 const cors = require("cors"); // Import the cors package
 const mongoose = require("mongoose");
 const expensedata = require("./models/expensemodel");
-const port = 3000;
+const port = process.env.APP_PORT || 4000;
 const expenseroute = require("./routes/expenseroutes.js");
 //middleware
 app.use(cors());
@@ -17,7 +18,7 @@ app.get("/", (req, res) => {
   res.send("Hello, Worldhdfkhk");
 });
 app.listen(port, () => {
-  console.log("log 300");
+  console.log("log 300",port);
 });
 
 // mangoDB
