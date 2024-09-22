@@ -1,8 +1,8 @@
-const expensedata = require("../models/expensemodel");
+const usermodeldata = require("../models/user");
 // const client = require("../postgresdb");
 // const queries = require("../queries");
 
-const getExpense = async (req, res) => {
+const getUser = async (req, res) => {
   // try {
   //   const result = await client.query(queries.Getall("expense"));
   //   console.log("Query result:", result.rows);
@@ -12,7 +12,7 @@ const getExpense = async (req, res) => {
   //   res.status(500).send("Internal Server Error");
   // }
   try {
-    const expense = await expensedata.find();
+    const expense = await usermodeldata.find();
     res.status(200).json({
       status: "success",
       data: expense,
@@ -23,10 +23,10 @@ const getExpense = async (req, res) => {
   }
 };
 
-const getExpensebyid = async (req, res) => {
+const getUserbyid = async (req, res) => {
   try {
     const { id } = req.params;
-    const expense = await expensedata.findById(id);
+    const expense = await usermodeldata.findById(id);
     res.status(200).json({
       status: "success",
       data: expense,
@@ -45,10 +45,19 @@ const getExpensebyid = async (req, res) => {
   // }
 };
 
-const createExpense = async (req, res) => {
+const createUser = async (req, res) => {
+  const { username, email, password } = req.body;
+
   try {
-    console.log(req.body, "dfjhdskfjdshk");
-    const expense = await expensedata.create(req.body);
+    const expenseall = await usermodeldata.find();
+    console.log(expenseall, "dfjhdskfjdshk");
+    expenseall.map((expense) => {
+      console.log(expense.email, "dfjhdskfjdshk");
+      if (expense.email === req.body.email) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+    });
+    const expense = await usermodeldata.create(req.body);
     res.status(200).json({
       status: "success",
       data: expense,
@@ -63,14 +72,14 @@ const createExpense = async (req, res) => {
   }
 };
 
-const updateeExpense = async (req, res) => {
+const updateeUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const expense = await expensedata.findByIdAndUpdate(id, req.body);
+    const expense = await usermodeldata.findByIdAndUpdate(id, req.body);
     if (!expense) {
       return res.status(404).json({ message: "expense not found" });
     }
-    const updateexpense = await expensedata.findById(id);
+    const updateexpense = await usermodeldata.findById(id);
     res.status(200).json({
       status: "success",
       data: updateexpense,
@@ -81,10 +90,10 @@ const updateeExpense = async (req, res) => {
   }
 };
 
-const deleteExpense = async (req, res) => {
+const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const expense = await expensedata.findByIdAndDelete(id);
+    const expense = await usermodeldata.findByIdAndDelete(id);
     if (!expense) {
       return res.status(404).json({ message: "expense not found" });
     }
@@ -95,9 +104,9 @@ const deleteExpense = async (req, res) => {
   }
 };
 module.exports = {
-  getExpense,
-  getExpensebyid,
-  createExpense,
-  updateeExpense,
-  deleteExpense,
+  getUser,
+  getUserbyid,
+  createUser,
+  updateeUser,
+  deleteUser,
 };
